@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             "Arjuna_Obstacle_Avoidance = arjuna.nav_dep.arjuna_obstacle_avoidance:main",
+            "Arjuna_IMU = arjuna.nav_dep.arjuna_imu:main",
         ],
     },
 )

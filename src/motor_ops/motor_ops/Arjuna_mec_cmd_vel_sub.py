@@ -15,7 +15,7 @@ RearRight_velocity = 0
 
 # Motor controller parameters
 BAUDRATE = 115200
-DEVICENAME = '/dev/motor'
+DEVICENAME = '/dev/ttyUSB1'
 MOTOR_ACCL = 0
 
 # Set up the port and packet handlers for the motor controller

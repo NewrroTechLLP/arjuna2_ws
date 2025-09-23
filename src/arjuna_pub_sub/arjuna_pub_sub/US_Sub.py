@@ -1,43 +1,71 @@
 #!/usr/bin/env python3
-
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float64
+from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Point
 
 class UltrasonicSubscriber(Node):
     def __init__(self):
-        super().__init__('US_Sub')
+        # Initialize ROS 2 node
+        super().__init__('ultrasonic_subscriber')
         
-        self.subscription_1 = self.create_subscription(
-            Float64,
-            'ultrasonic_distance_1',
-            self.distance_1_callback,
-            10
-        )
-        self.subscription_2 = self.create_subscription(
-            Float64,
-            'ultrasonic_distance_2',
-            self.distance_2_callback,
+        # Subscribers for sensor data
+        self.array_sub = self.create_subscription(
+            Float32MultiArray, 
+            '/ultrasonic_distances', 
+            self.array_callback, 
             10
         )
         
-        self.get_logger().info("Ready to receive data on both ultrasonic topics.")
-
-    def distance_1_callback(self, msg):
-        self.get_logger().info(f'Subscribed to Sensor 1: {msg.data:.2f} cm')
-
-    def distance_2_callback(self, msg):
-        self.get_logger().info(f'Subscribed to Sensor 2: {msg.data:.2f} cm')
+        self.point_sub = self.create_subscription(
+            Point, 
+            '/ultrasonic_point', 
+            self.point_callback, 
+            10
+        )
+        
+        # Prevent unused variable warning
+        self.array_sub
+        self.point_sub
+        
+        self.get_logger().info("Ultrasonic Subscriber Node Started")
+        
+    def array_callback(self, msg):
+        """Callback for Float32MultiArray messages"""
+        if len(msg.data) >= 2:
+            sensor1_distance = msg.data[0]
+            sensor2_distance = msg.data[1]
+            
+            print(f"[Array] Sensor 1: {sensor1_distance} cm | Sensor 2: {sensor2_distance} cm")
+            
+            # Add distance-based alerts
+            if sensor1_distance < 10:
+                print("  -> WARNING: Sensor 1 detects close obstacle!")
+            if sensor2_distance < 10:
+                print("  -> WARNING: Sensor 2 detects close obstacle!")
+                
+    def point_callback(self, msg):
+        """Callback for Point messages"""
+        sensor1_distance = msg.x
+        sensor2_distance = msg.y
+        
+        print(f"[Point] Sensor 1: {sensor1_distance} cm | Sensor 2: {sensor2_distance} cm")
+        
+        # Calculate average distance
+        avg_distance = (sensor1_distance + sensor2_distance) / 2
+        print(f"  -> Average distance: {avg_distance} cm")
 
 def main(args=None):
     rclpy.init(args=args)
-    us_sub = UltrasonicSubscriber()
+    
+    subscriber = UltrasonicSubscriber()
+    
     try:
-        rclpy.spin(us_sub)
+        rclpy.spin(subscriber)
     except KeyboardInterrupt:
         pass
     finally:
-        us_sub.destroy_node()
+        subscriber.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':

@@ -4,10 +4,10 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point
 
-class UltrasonicSubscriber(Node):
+class US_Sub(Node):
     def __init__(self):
         # Initialize ROS 2 node
-        super().__init__('ultrasonic_subscriber')
+        super().__init__('US_Sub')
         
         # Subscribers for sensor data
         self.array_sub = self.create_subscription(
@@ -58,7 +58,7 @@ class UltrasonicSubscriber(Node):
 def main(args=None):
     rclpy.init(args=args)
     
-    subscriber = UltrasonicSubscriber()
+    subscriber = US_Sub()
     
     try:
         rclpy.spin(subscriber)

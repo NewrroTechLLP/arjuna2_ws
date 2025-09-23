@@ -10,7 +10,7 @@ from time import sleep
 
 # Motor controller parameters
 BAUDRATE = 115200
-DEVICENAME = '/dev/motor'
+DEVICENAME = '/dev/ttyUSB1'
 MOTOR_SPEED = 300
 MOTOR_ACCL = 0
 

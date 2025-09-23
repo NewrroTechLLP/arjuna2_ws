@@ -6,10 +6,10 @@ import json
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point
 
-class UltrasonicPublisher(Node):
+class US_Pub(Node):
     def __init__(self):
         # Initialize ROS 2 node
-        super().__init__('ultrasonic_publisher')
+        super().__init__('US_Pub')
         
         # Publisher for sensor data
         self.sensor_pub = self.create_publisher(Float32MultiArray, '/ultrasonic_distances', 10)
@@ -81,7 +81,7 @@ def main(args=None):
     rclpy.init(args=args)
     
     try:
-        publisher = UltrasonicPublisher()
+        publisher = US_Pub()
         publisher.run()
     except KeyboardInterrupt:
         pass

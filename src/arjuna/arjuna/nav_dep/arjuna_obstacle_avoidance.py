@@ -20,13 +20,18 @@ class LidarSubscriber(Node):
 
     def laser_callback(self, msg):
         """Process laser scan data and extract regions"""
+        
+        # Helper function to safely get min from a range
+        def safe_min(range_slice, default=10.0):
+            return min(min(range_slice), default) if len(range_slice) > 0 else default
+        
         regions = {
-            'front_L': min(min(msg.ranges[0:130]), 10.0),
-            'fleft': min(min(msg.ranges[131:230]), 10.0),
-            'left': min(min(msg.ranges[231:280]), 10.0),
-            'right': min(min(msg.ranges[571:620]), 10.0),
-            'fright': min(min(msg.ranges[621:720]), 10.0),
-            'front_R': min(min(msg.ranges[721:850]), 10.0)
+            'front_L': safe_min(msg.ranges[0:130]),
+            'fleft': safe_min(msg.ranges[131:230]),
+            'left': safe_min(msg.ranges[231:280]),
+            'right': safe_min(msg.ranges[571:620]),
+            'fright': safe_min(msg.ranges[621:720]),
+            'front_R': safe_min(msg.ranges[721:850])
         }
         
         # Log the regions data
